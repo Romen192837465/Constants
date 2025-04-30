@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Определение устройства</title>
+    <script>
+        // Функция для проверки, является ли устройство мобильным
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Перенаправление
+        if (isMobile()) {
+            window.location.href = "mobile.html"; // Открыть мобильную версию
+        } else {
+            window.location.href = "desktop.html"; // Открыть десктопную версию
+        }
+    </script>
+</head>
+<body>
+    <p>Если перенаправление не сработало, перейдите вручную:</p>
+    <ul>
+        <li><a href="desktop.html">Версия для ПК</a></li>
+        <li><a href="mobile.html">Версия для телефона</a></li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математические константы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+        }
+        h1 {
+            color: #3a7bd5;
+            text-align: center;
+            cursor: default;
+            margin-bottom: 25px;
+        }
+        .pi {
+            transition: all 0.3s;
+            display: inline-block;
+            cursor: pointer;
+            color: #3a7bd5;
+        }
+        .pi:hover {
+            color: #ff0000 !important;
+            transform: scale(1.2);
+        }
+        .digits {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            background: linear-gradient(135deg, #e6f0ff 0%, #ebf0f7 100%);
+            color: #2a5ea7;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            font-size: 1.15em;
+            box-shadow: 0 4px 12px rgba(58, 123, 213, 0.1);
+            border: 1px solid #d0e0ff;
+            line-height: 1.8;
+        }
+        .info {
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e0e8f5;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #3a7bd5;
+            font-size: 1.3em;
+        }
+        .info p {
+            color: #555;
+            margin-bottom: 0;
+        }
+        .hint {
+            font-size: 0.95em;
+            color: #666;
+            text-align: center;
+            margin-top: 25px;
+            transition: all 0.3s;
+            background-color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e0e8f5;
+        }
+        .current-constant {
+            font-weight: bold;
+            color: #3a7bd5;
+            padding: 0 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1><span class="pi" id="pi-symbol">π</span>: 100 цифр после запятой</h1>
+    <div class="digits" id="constants">
+3,1415926535 8979323846 2643383279 5028841971 6939937510 5820974944 5923078164 0628620899 8628034825 3421170679
+    </div>
+    <div class="info" id="number-info">
+        <h3>Число π (Пи)</h3>
+        <p>Математическая константа, равная отношению длины окружности к её диаметру.</p>
+    </div>
+    <div class="hint" id="hint">Наведите на π, чтобы увидеть e</div>
+
+    <script>
+        const constants = {
+            pi: {
+                digits: "3,1415926535 8979323846 2643383279 5028841971 6939937510 5820974944 5923078164 0628620899 8628034825 3421170679",
+                name: "π (Пи)",
+                description: "Математическая константа, равная отношению длины окружности к её диаметру.",
+                next: "e"
+            },
+            e: {
+                digits: "2,7182818284 5904523536 0287471352 6624977572 4709369995 9574966967 6277240766 3035354759 4571382178 5251664274",
+                name: "e (число Эйлера)",
+                description: "Основание натурального логарифма. Важная константа в математическом анализе.",
+                next: "γ"
+            },
+            gamma: {
+                digits: "0,5772156649 0153286060 6512090082 4024310421 5933593992 3598805767 2348848677 2677766467 0936947063 2917467495",
+                name: "γ (Постоянная Эйлера-Маскерони)",
+                description: "Разница между частичной суммой гармонического ряда и натуральным логарифмом числа.",
+                next: "φ"
+            },
+            phi: {
+                digits: "1,6180339887 4989484820 4586834365 6381177203 0917980576 2862135448 6227052604 6281890244 9707207204 1893911374",
+                name: "φ (Золотое сечение)",
+                description: "Отношение, при котором целое относится к большей части, как большая к меньшей.",
+                next: "√2"
+            },
+            sqrt2: {
+                digits: "1,4142135623 7309504880 1688724209 6980785696 7187537694 8073176679 7379907324 7846210703 8850387534 3276415727",
+                name: "√2 (Квадратный корень из двух)",
+                description: "Положительное решение уравнения x² = 2. Первое известное иррациональное число.",
+                next: "π"
+            }
+        };
+
+        const piSymbol = document.getElementById('pi-symbol');
+        const constantsBlock = document.getElementById('constants');
+        const infoBlock = document.getElementById('number-info');
+        const hintBlock = document.getElementById('hint');
+
+        let currentState = 'pi';
+        let hoverState = null;
+
+        function updateDisplay() {
+            const displayState = hoverState || currentState;
+            const constant = constants[displayState];
+            
+            // Обновляем цифры и информацию
+            constantsBlock.textContent = constant.digits;
+            infoBlock.innerHTML = `
+                <h3>Число ${constant.name}</h3>
+                <p>${constant.description}</p>
+            `;
+            
+            // Обновляем подсказку
+            if (hoverState) {
+                hintBlock.innerHTML = `Нажмите на <span class="current-constant">${piSymbol.textContent}</span> чтобы зафиксировать`;
+            } else {
+                const nextConstant = constants[currentState].next;
+                hintBlock.innerHTML = `Наведите на <span class="current-constant">${piSymbol.textContent}</span>, чтобы увидеть ${nextConstant}`;
+            }
+        }
+
+        function handleMouseEnter() {
+            if (currentState === 'pi') {
+                hoverState = 'e';
+                piSymbol.textContent = 'e';
+            } else if (currentState === 'e') {
+                hoverState = 'gamma';
+                piSymbol.textContent = 'γ';
+            } else if (currentState === 'gamma') {
+                hoverState = 'phi';
+                piSymbol.textContent = 'φ';
+            } else if (currentState === 'phi') {
+                hoverState = 'sqrt2';
+                piSymbol.textContent = '√2';
+            } else {
+                hoverState = 'pi';
+                piSymbol.textContent = 'π';
+            }
+            updateDisplay();
+        }
+
+        function handleMouseLeave() {
+            hoverState = null;
+            piSymbol.textContent = 
+                currentState === 'pi' ? 'π' : 
+                currentState === 'e' ? 'e' :
+                currentState === 'gamma' ? 'γ' : 
+                currentState === 'phi' ? 'φ' : '√2';
+            updateDisplay();
+        }
+
+        function handleClick() {
+            if (hoverState) {
+                currentState = hoverState;
+                hoverState = null;
+                updateDisplay();
+            }
+        }
+
+        // Назначаем обработчики событий
+        piSymbol.addEventListener('mouseenter', handleMouseEnter);
+        piSymbol.addEventListener('mouseleave', handleMouseLeave);
+        piSymbol.addEventListener('click', handleClick);
+
+        // Инициализация
+        updateDisplay();
+    </script>
+</body>
+</html>
